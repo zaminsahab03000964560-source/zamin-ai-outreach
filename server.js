@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const Database = require("better-sqlite3");
+const { installAgentEngine } = require("./agent-engine");
 const DATA_DIR = path.join(__dirname, "data");
 const DB_FILE = process.env.DATABASE_PATH || path.join(DATA_DIR, "z2digital.sqlite");
 fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
@@ -21,6 +22,7 @@ function taskRows() { return db.prepare("SELECT * FROM tasks ORDER BY createdAt 
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+const agentEngine = installAgentEngine(db, MODEL);
 
 const SYSTEM_PROMPT = `You are the Z 2 Digital AI Business Operations Director, speaking as the central AI assistant to the owner, visiting company director/sir, students, and team members.
 LANGUAGE AND TONE
@@ -99,6 +101,31 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { ok: true, name: updated.name || patch.name, assistantId: updated.id, firstMessage: updated.firstMessage || patch.firstMessage });
     } catch (error) { return send(res, 502, { error: "Could not update the existing Vapi assistant." }); }
   }
+
+  if ((url.pathname === "/api/agent/run" || url.pathname === "/api/agent/jobs" || url.pathname.startsWith("/api/agent/jobs/")) && !requireAuth(req,res)) return;
+  if (req.method === "POST" && url.pathname === "/api/agent/run") {
+    try {
+      const body = await readBody(req);
+      const instruction = typeof body.instruction === "string" ? body.instruction.trim() : "";
+      if (!instruction) return send(res,400,{error:"Task likhein."});
+      if (instruction.length > 6000) return send(res,400,{error:"Task 6,000 characters se chhota rakhein."});
+      if (!agentEngine.configured()) return send(res,503,{error:"OPENAI_API_KEY hosting environment mein configure nahi hai."});
+      return send(res,202,{job:agentEngine.enqueue(instruction)});
+    } catch(e) { return send(res,500,{error:"Agent task queue nahi ho saka."}); }
+  }
+  if (req.method === "GET" && url.pathname === "/api/agent/jobs") {
+    return send(res,200,{jobs:agentEngine.list(),workerConfigured:agentEngine.configured(),agents:agentEngine.agents});
+  }
+  if (req.method === "POST" && url.pathname.startsWith("/api/agent/jobs/")) {
+    try {
+      const id = decodeURIComponent(url.pathname.slice("/api/agent/jobs/".length));
+      const body = await readBody(req);
+      if (!["approved","rejected"].includes(body.decision)) return send(res,400,{error:"Decision invalid."});
+      const result = agentEngine.decide(id,body.decision);
+      return send(res,result.status,result.status===200?result:{error:result.error});
+    } catch(e) { return send(res,500,{error:"Approval save nahi hui."}); }
+  }
+
   if (req.method === "GET" && url.pathname === "/api/tasks") {
     try { return send(res,200,{tasks:taskRows()}); } catch(e) { return send(res,500,{error:"Could not load task history."}); }
   }

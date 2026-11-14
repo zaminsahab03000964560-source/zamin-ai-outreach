@@ -39,6 +39,27 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, { ok: true, service: "Z 2 Digital AI backend", aiConfigured: Boolean(process.env.OPENAI_API_KEY) });
   }
 
+  if (req.method === "POST" && url.pathname === "/api/admin/update-vapi-assistant") {
+    if (!process.env.VAPI_API_KEY || !process.env.VAPI_ASSISTANT_ID || !process.env.WORKSPACE_ADMIN_TOKEN) {
+      return send(res, 503, { error: "Vapi setup is incomplete. Configure the Vapi API key, existing assistant ID, and workspace admin token in hosting environment variables." });
+    }
+    if ((req.headers.authorization || "") !== "Bearer " + process.env.WORKSPACE_ADMIN_TOKEN) return send(res, 401, { error: "Unauthorized." });
+    try {
+      const endpoint = "https://api.vapi.ai/assistant/" + encodeURIComponent(process.env.VAPI_ASSISTANT_ID);
+      const currentResponse = await fetch(endpoint, { headers: { Authorization: "Bearer " + process.env.VAPI_API_KEY } });
+      const current = await currentResponse.json();
+      if (!currentResponse.ok) return send(res, 502, { error: "Could not retrieve the existing Vapi assistant. Check its ID and API key." });
+      const oldMessages = current.model && Array.isArray(current.model.messages) ? current.model.messages : [];
+      const otherMessages = oldMessages.filter(message => message.role !== "system");
+      const prompt = "You are Z 2 Digital AI Assistant, the central voice assistant for an owner-controlled digital marketing workspace. Understand and respond in Roman Urdu, Urdu, and English, matching the owner language. Coordinate five specialist agents: Email Marketing, Leads & CRM, Website & Content, Campaigns & Sales, and Analytics & Reporting. Help the owner plan work, assign the right specialist, prepare drafts, and summarize results. Never claim an email was sent, CRM changed, an ad was published, or an external action completed unless a connected tool confirms it. Always obtain explicit owner approval before external actions. If an integration is unavailable, explain the limitation. Keep replies concise and practical.";
+      const patch = { name: "Z 2 Digital AI Assistant", firstMessage: "Assalam-o-alaikum! Main Z 2 Digital AI Assistant hoon. Aaj aapke marketing workspace mein kis kaam mein madad karun?" };
+      if (current.model) patch.model = Object.assign({}, current.model, { messages: [{ role: "system", content: prompt }].concat(otherMessages) });
+      const updatedResponse = await fetch(endpoint, { method: "PATCH", headers: { Authorization: "Bearer " + process.env.VAPI_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify(patch) });
+      const updated = await updatedResponse.json();
+      if (!updatedResponse.ok) return send(res, 502, { error: "Vapi rejected the update. Review the assistant settings in Vapi." });
+      return send(res, 200, { ok: true, name: updated.name || patch.name, assistantId: updated.id, firstMessage: updated.firstMessage || patch.firstMessage });
+    } catch (error) { return send(res, 502, { error: "Could not update the existing Vapi assistant." }); }
+  }
   if (req.method === "POST" && url.pathname === "/api/chat") {
     if (!process.env.OPENAI_API_KEY) {
       return send(res, 503, { error: "AI backend setup is incomplete. Add OPENAI_API_KEY to the hosting environment variables." });

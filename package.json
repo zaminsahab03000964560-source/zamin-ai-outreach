@@ -1,0 +1,12 @@
+{
+  "name": "z-2-digital-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Z 2 Digital AI marketing workspace",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

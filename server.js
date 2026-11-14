@@ -151,7 +151,8 @@ const server = http.createServer(async (req, res) => {
     return send(res, 405, { error: "Method not allowed." });
   }
 
-  const requested = url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1));
+  if (url.pathname === "/sir-demo" && !requireAuth(req,res)) return;
+  const requested = url.pathname === "/" ? "index.html" : (url.pathname === "/sir-demo" ? "sir-demo.html" : decodeURIComponent(url.pathname.slice(1)));
   const filePath = path.resolve(ROOT, requested);
   if (!filePath.startsWith(ROOT + path.sep) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
     res.writeHead(404);

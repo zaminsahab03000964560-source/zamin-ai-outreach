@@ -1,51 +1,108 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zamin AI Outreach</title>
+  <meta name="theme-color" content="#090d18">
+  <meta name="description" content="Z to Digital — AI-powered digital marketing, outreach and business operations.">
+  <title>Z to Digital | AI-Powered Digital Growth</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #101827; color: white; text-align: center; }
-    header { padding: 70px 20px; }
-    h1 { font-size: 42px; }
-    p { color: #d1d5db; line-height: 1.7; }
-    .btn { display: inline-block; padding: 14px 22px; background: #35c9a5; color: #08131d; text-decoration: none; border-radius: 8px; font-weight: bold; }
-    section { padding: 30px 20px; }
-    .services { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
-    .service { background: #1e293b; padding: 24px; border-radius: 12px; max-width: 250px; }
+    :root{--bg:#090d18;--panel:#111827;--panel2:#151f30;--line:#263247;--text:#f4f7fb;--muted:#9ba9bc;--green:#55e0b0;--cyan:#77d8f5;--max:1160px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .top{position:sticky;top:0;z-index:10;background:rgba(9,13,24,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(155,169,188,.14)}
+    nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.04em;font-size:21px}
+    .mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--green),var(--cyan));color:#07121a;display:grid;place-items:center;font-weight:950;font-size:17px;box-shadow:0 8px 30px #55e0b033}
+    .links{display:flex;gap:26px;color:var(--muted);font-size:14px}.links a:hover{color:var(--green)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 19px;border-radius:10px;background:var(--green);color:#07141a;font-weight:800;font-size:14px;border:1px solid transparent;transition:.2s}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px #55e0b033}.btn.secondary{background:transparent;border-color:var(--line);color:var(--text)}
+    .hero{padding:100px 0 82px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:#1ab78b14;filter:blur(70px);right:-120px;top:-120px;pointer-events:none}
+    .eyebrow{display:inline-flex;gap:9px;align-items:center;border:1px solid #55e0b044;background:#55e0b00d;color:var(--green);padding:7px 12px;border-radius:99px;font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+    h1{font-size:clamp(44px,7vw,76px);line-height:1.04;letter-spacing:-.065em;margin:23px 0 20px;max-width:850px}
+    .grad{background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{font-size:18px;color:var(--muted);max-width:680px;margin:0 0 30px}.actions{display:flex;gap:12px;flex-wrap:wrap}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:42px;align-items:center}
+    .orbit{border:1px solid var(--line);background:linear-gradient(145deg,#172338,#0e1726);border-radius:24px;padding:25px;box-shadow:0 28px 80px #0005}
+    .orbit-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;margin-bottom:22px}
+    .brain{margin:auto;width:116px;height:116px;border-radius:30px;display:grid;place-items:center;background:linear-gradient(145deg,#55e0b022,#77d8f522);border:1px solid #55e0b055;font-size:42px}
+    .orbit-title{text-align:center;font-weight:800;font-size:18px;margin:14px 0 3px}.orbit-sub{text-align:center;color:var(--muted);font-size:12px}
+    .agent-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:24px}.mini{background:#0b1321;border:1px solid var(--line);padding:11px;border-radius:12px;font-size:12px;color:#dce6f2}.mini b{display:block;margin-bottom:2px}.mini span{color:var(--muted)}
+    section{padding:76px 0}.section-head{max-width:700px;margin-bottom:34px}.kicker{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+    h2{font-size:clamp(30px,4vw,44px);line-height:1.12;letter-spacing:-.045em;margin:10px 0 13px}.section-head p{color:var(--muted);margin:0}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:linear-gradient(145deg,var(--panel),#0e1624);border:1px solid var(--line);border-radius:17px;padding:23px;min-height:190px}
+    .icon{width:43px;height:43px;border-radius:13px;background:#55e0b015;border:1px solid #55e0b033;display:grid;place-items:center;font-size:20px;margin-bottom:17px}
+    h3{margin:0 0 8px;font-size:17px}.card p{color:var(--muted);font-size:14px;margin:0}
+    .agent-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.agent{display:flex;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+    .agent .icon{flex:0 0 43px;margin:0}.agent p{margin:0;color:var(--muted);font-size:13px}.tag{display:inline-block;margin-top:12px;color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+    .approval{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;background:linear-gradient(130deg,#132337,#101827);border:1px solid var(--line);border-radius:22px;padding:34px}
+    .steps{display:grid;gap:12px}.step{display:flex;gap:13px;align-items:center;padding:13px;background:#0a1321;border:1px solid var(--line);border-radius:12px;font-size:14px}
+    .num{width:28px;height:28px;border-radius:9px;background:#55e0b020;color:var(--green);display:grid;place-items:center;font-weight:800;flex:none}
+    .cta{padding:45px;border:1px solid #55e0b044;border-radius:22px;background:radial-gradient(ellipse at top right,#55e0b01a,transparent 60%),var(--panel);text-align:center}
+    .cta p{color:var(--muted);max-width:600px;margin:0 auto 22px}
+    footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    @media(max-width:800px){.hero-grid{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}.approval{grid-template-columns:1fr}.links{display:none}}
+    @media(max-width:540px){.wrap{width:min(100% - 28px,var(--max))}.hero{padding:70px 0 55px}section{padding:55px 0}.cards,.agent-list{grid-template-columns:1fr}.approval,.cta{padding:23px}.brand{font-size:18px}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Zamin AI Outreach</h1>
-    <p>Helping restaurants grow with social media marketing, Facebook and Instagram ads, and more online orders.</p>
-    <a class="btn" href="mailto:zohanzamin29@gmail.com">Contact Us</a>
-  </header>
-  <section>
-    <h2>Our Services</h2>
-    <div class="services">
-      <div class="service"><h3>Social Media Marketing</h3><p>Build your restaurant's online presence.</p></div>
-      <div class="service"><h3>Facebook & Instagram Ads</h3><p>Reach more local customers.</p></div>
-      <div class="service"><h3>Online Order Growth</h3><p>Help more customers discover your restaurant.</p></div>
-    </div>
-  </section>
-  <section>
-    <h2>Let's Grow Your Restaurant</h2>
-    <p>Contact us to discuss your restaurant's goals.</p>
-    <a class="btn" href="mailto:zohanzamin29@gmail.com">Email Us</a>
-  </section> 
-  
-<script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
-
-<vapi-widget 
-public-key="7c30dffe-634b-4ba1-bf0f-e06c336f8f3f"
-
-  assistant-id="71a2e155-47b9-455e-b107-f8d037a863cd"
-  mode="voice"
-  theme="dark"
-  size="compact"
-></vapi-widget>
-
+  <div class="top"><nav class="wrap">
+    <a class="brand" href="#home"><span class="mark">Z²</span><span>Z to Digital</span></a>
+    <div class="links"><a href="#services">Services</a><a href="#agents">AI Agents</a><a href="#workflow">How it works</a></div>
+    <a class="btn" href="mailto:zohanzamin29@gmail.com?subject=Z%20to%20Digital%20Enquiry">Let's Talk</a>
+  </nav></div>
+  <main id="home">
+    <header class="hero"><div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><i class="dot"></i> Double Z Digital Marketing</span>
+        <h1>Grow smarter.<br><span class="grad">Work with AI.</span></h1>
+        <p class="lead">Z to Digital brings digital marketing, customer outreach and AI-powered business workflows together — with you in control of every important decision.</p>
+        <div class="actions"><a class="btn" href="#agents">Explore AI Agents</a><a class="btn secondary" href="#services">Our Services</a></div>
+      </div>
+      <div class="orbit">
+        <div class="orbit-head"><span>THE Z TO DIGITAL SYSTEM</span><span>● OWNER CONTROL</span></div>
+        <div class="brain">✦</div><div class="orbit-title">Central AI Assistant</div><div class="orbit-sub">One place to coordinate your business</div>
+        <div class="agent-mini">
+          <div class="mini"><b>01 · Email</b><span>Outreach & campaigns</span></div><div class="mini"><b>02 · CRM</b><span>Leads & customers</span></div>
+          <div class="mini"><b>03 · Website</b><span>Content & SEO</span></div><div class="mini"><b>04 · Sales</b><span>Campaign workflows</span></div>
+          <div class="mini" style="grid-column:1/-1"><b>05 · Analytics</b><span>Insights & reporting</span></div>
+        </div>
+      </div>
+    </div></header>
+    <section id="services"><div class="wrap">
+      <div class="section-head"><div class="kicker">What we do</div><h2>Digital growth, connected in one place.</h2><p>Practical digital services designed to help businesses attract customers, build relationships and make better decisions.</p></div>
+      <div class="cards">
+        <article class="card"><div class="icon">↗</div><h3>Digital Marketing</h3><p>Build a consistent online presence with a clear marketing strategy.</p></article>
+        <article class="card"><div class="icon">◎</div><h3>Social Media & Ads</h3><p>Plan content and advertising campaigns for the right audience.</p></article>
+        <article class="card"><div class="icon">✉</div><h3>Email Outreach</h3><p>Organize targeted outreach, follow-ups and customer communication.</p></article>
+        <article class="card"><div class="icon">◇</div><h3>Website & SEO</h3><p>Create a strong web presence and improve discoverability.</p></article>
+        <article class="card"><div class="icon">▤</div><h3>Lead Management</h3><p>Keep prospects, conversations and sales opportunities organized.</p></article>
+        <article class="card"><div class="icon">⌁</div><h3>Business Automation</h3><p>Connect repeatable workflows and reduce manual administration.</p></article>
+      </div>
+    </div></section>
+    <section id="agents"><div class="wrap">
+      <div class="section-head"><div class="kicker">AI workforce</div><h2>Five specialist agents. One central assistant.</h2><p>Each agent has a defined responsibility. The central assistant routes requests to the right specialist, while you remain the decision-maker.</p></div>
+      <div class="agent-list">
+        <article class="agent"><div class="icon">✉</div><div><h3>01. Email Marketing Agent</h3><p>Drafts email campaigns, segments audiences, prepares follow-ups and tracks campaign outcomes.</p><span class="tag">Email & outreach</span></div></article>
+        <article class="agent"><div class="icon">♙</div><div><h3>02. CRM & Leads Agent</h3><p>Organizes leads, customer records, follow-up tasks and relationship history.</p><span class="tag">Customers & pipeline</span></div></article>
+        <article class="agent"><div class="icon">▧</div><div><h3>03. Website & Content Agent</h3><p>Prepares website content, SEO improvements, page updates and content plans.</p><span class="tag">Website & content</span></div></article>
+        <article class="agent"><div class="icon">↗</div><div><h3>04. Campaigns & Sales Agent</h3><p>Plans campaigns, monitors opportunities and coordinates sales workflows.</p><span class="tag">Campaigns & sales</span></div></article>
+        <article class="agent"><div class="icon">▥</div><div><h3>05. Analytics & Reporting Agent</h3><p>Brings together business metrics, campaign results and clear performance reports.</p><span class="tag">Insights & reports</span></div></article>
+        <article class="agent"><div class="icon">✦</div><div><h3>Central AI Assistant</h3><p>Understands your instruction, selects the relevant agent and presents work for your review.</p><span class="tag">Your AI coordinator</span></div></article>
+      </div>
+    </div></section>
+    <section id="workflow"><div class="wrap"><div class="approval">
+      <div><div class="kicker">Owner-first automation</div><h2>You stay in control.</h2><p style="color:var(--muted)">The system is designed around approval-based execution. Sensitive actions such as sending campaigns, publishing changes or modifying customer data should require your explicit approval.</p></div>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><span><b>You give an instruction</b><br>Tell the central assistant what you need.</span></div>
+        <div class="step"><span class="num">2</span><span><b>AI prepares the work</b><br>The right specialist agent handles the task.</span></div>
+        <div class="step"><span class="num">3</span><span><b>You review and approve</b><br>Check the proposed action before execution.</span></div>
+        <div class="step"><span class="num">4</span><span><b>Approved work is executed</b><br>Results and activity are recorded.</span></div>
+      </div>
+    </div></div></section>
+    <section><div class="wrap"><div class="cta"><div class="kicker">Let's build what comes next</div><h2>Make your business work smarter.</h2><p>Talk to Z to Digital about digital marketing, outreach and building an AI-powered business workflow.</p><a class="btn" href="mailto:zohanzamin29@gmail.com?subject=Let's%20build%20with%20Z%20to%20Digital">Contact Z to Digital</a></div></div></section>
+  </main>
+  <footer><div class="wrap foot"><span>© <span id="year">2026</span> Z to Digital · Double Z Digital Marketing</span><span>Built for smarter digital growth.</span></div></footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 </body>
 </html>

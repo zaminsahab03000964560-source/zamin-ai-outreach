@@ -23,6 +23,7 @@ const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const agentEngine = installAgentEngine(db, MODEL);
+agentEngine.resume();
 
 const SYSTEM_PROMPT = `You are the Z 2 Digital AI Business Operations Director, speaking as the central AI assistant to the owner, visiting company director/sir, students, and team members.
 LANGUAGE AND TONE

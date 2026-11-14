@@ -75,7 +75,7 @@ function installAgentEngine(db, model) {
     return { status: 200, job: { id, status } };
   }
 
-  return { enqueue, list, decide, agents: AGENTS, configured: () => Boolean(process.env.OPENAI_API_KEY) };
+  return { enqueue, list, decide, agents: AGENTS, configured: () => Boolean(process.env.OPENAI_API_KEY), resume: () => setImmediate(processQueue) };
 }
 
 module.exports = { installAgentEngine };

@@ -9,7 +9,7 @@
 <button class="active" data-view="overview"><span class="ico">▦</span>Overview</button><button data-view="assistant"><span class="ico">✦</span>AI Assistant</button><button data-view="agents"><span class="ico">◈</span>AI Agents</button><button data-view="approvals"><span class="ico">✓</span>Approvals</button><button data-view="tasks"><span class="ico">☷</span>Task History</button>
 </div></div>
 <div><div class="smallcap">BUSINESS TOOLS</div><div class="nav"><button data-view="crm"><span class="ico">♙</span>Leads & CRM</button><button data-view="campaigns"><span class="ico">↗</span>Campaigns</button><button data-view="reports"><span class="ico">▤</span>Analytics</button><button data-view="website"><span class="ico">▧</span>Website & Content</button></div></div>
-<div class="side-bottom"><div class="owner"><b>Workspace Owner</b><span>Approval required for external actions</span></div></div></aside>
+<div class="side-bottom"><div class="owner"><b>Workspace Owner</b><span>Approval required for external actions</span><button class="btn ghost" id="ownerLogout" style="margin-top:12px;width:100%">Log out</button></div></div></aside>
 <main><header class="topbar"><div class="crumb">Z 2 Digital <span style="color:#52657d">/</span> <b id="crumb">Overview</b></div><div class="topright"><span class="status">● OWNER CONTROL ON</span><div class="avatar">Z</div></div></header>
 <div class="content">
 <section class="view active" id="overview"><div class="welcome"><div><div class="eyebrow">BUSINESS COMMAND CENTER</div><h1>Good day. Let's grow smarter.</h1><p>Your business workspace, with one assistant and five specialist agents.</p></div><div class="date" id="today"></div></div>
@@ -53,6 +53,7 @@ document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",(
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>document.querySelector('[data-view="'+b.dataset.jump+'"]').click()));
 $("sendTask").onclick=()=>addTask($("taskInput"),"assistantReply");$("sendTask2").onclick=()=>addTask($("taskInput2"),"assistantReply2");
 async function bootAuth(){try{const r=await fetch("/api/auth/session");const d=await r.json();if(d.authenticated){$("ownerGate").style.display="none";$("workspaceApp").style.display="grid";await loadTasks();}}catch(e){$("loginError").textContent="Server connection unavailable.";}}
+$("ownerLogout").addEventListener("click",async()=>{try{await fetch("/api/auth/logout",{method:"POST"});}finally{tasks=[];render();$("workspaceApp").style.display="none";$("ownerGate").style.display="grid";}});
 $("ownerLoginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginError").textContent="";try{const r=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:$("ownerPassword").value})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Login failed");$("ownerPassword").value="";$("ownerGate").style.display="none";$("workspaceApp").style.display="grid";await loadTasks();}catch(err){$("loginError").textContent=err.message;}});
 $("today").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});$("year").textContent=new Date().getFullYear();bootAuth();
 </script>

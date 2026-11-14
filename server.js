@@ -1,6 +1,9 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
+const DATA_DIR = path.join(ROOT, "data");
+const TASKS_FILE = path.join(DATA_DIR, "tasks.json");
 
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
@@ -30,6 +33,17 @@ function send(res, status, data) {
     "X-Content-Type-Options": "nosniff"
   });
   res.end(JSON.stringify(data));
+}
+
+async function readTasks() {
+  try { return JSON.parse(await fs.promises.readFile(TASKS_FILE, "utf8")); }
+  catch (error) { if (error.code === "ENOENT") return []; throw error; }
+}
+async function writeTasks(tasks) {
+  await fs.promises.mkdir(DATA_DIR, { recursive: true });
+  const temp = TASKS_FILE + ".tmp";
+  await fs.promises.writeFile(temp, JSON.stringify(tasks, null, 2), { mode: 0o600 });
+  await fs.promises.rename(temp, TASKS_FILE);
 }
 
 async function readBody(req) {
@@ -69,6 +83,44 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { ok: true, name: updated.name || patch.name, assistantId: updated.id, firstMessage: updated.firstMessage || patch.firstMessage });
     } catch (error) { return send(res, 502, { error: "Could not update the existing Vapi assistant." }); }
   }
+  if (req.method === "GET" && url.pathname === "/api/tasks") {
+    try { return send(res, 200, { tasks: await readTasks() }); }
+    catch (error) { return send(res, 500, { error: "Could not load task history." }); }
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/tasks") {
+    try {
+      const body = await readBody(req);
+      const title = typeof body.title === "string" ? body.title.trim() : "";
+      const agent = typeof body.agent === "string" ? body.agent.trim() : "Central AI Assistant · Triage";
+      if (!title) return send(res, 400, { error: "Task description is required." });
+      if (title.length > 4000) return send(res, 400, { error: "Task description is too long." });
+      const tasks = await readTasks();
+      const task = { id: crypto.randomUUID(), title, agent, status: "Pending review", result: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      tasks.push(task);
+      await writeTasks(tasks);
+      return send(res, 201, { task });
+    } catch (error) { return send(res, 500, { error: "Could not save the task." }); }
+  }
+
+  if (req.method === "PATCH" && url.pathname.startsWith("/api/tasks/")) {
+    try {
+      const id = decodeURIComponent(url.pathname.slice("/api/tasks/".length));
+      const body = await readBody(req);
+      const allowed = ["Pending review", "Approved · awaiting integration", "Rejected"];
+      if (body.status !== undefined && !allowed.includes(body.status)) return send(res, 400, { error: "Invalid task status." });
+      if (body.result !== undefined && (typeof body.result !== "string" || body.result.length > 12000)) return send(res, 400, { error: "Invalid task result." });
+      const tasks = await readTasks();
+      const task = tasks.find(item => item.id === id);
+      if (!task) return send(res, 404, { error: "Task not found." });
+      if (body.status !== undefined) task.status = body.status;
+      if (body.result !== undefined) task.result = body.result;
+      task.updatedAt = new Date().toISOString();
+      await writeTasks(tasks);
+      return send(res, 200, { task });
+    } catch (error) { return send(res, 500, { error: "Could not update the task." }); }
+  }
+
   if (req.method === "POST" && url.pathname === "/api/chat") {
     if (!process.env.OPENAI_API_KEY) {
       return send(res, 503, { error: "AI backend setup is incomplete. Add OPENAI_API_KEY to the hosting environment variables." });

@@ -1,21 +1,15 @@
 services:
   - type: web
-    name: z2-digital-private-preview
+    name: z-2-digital-private-preview
     runtime: node
-    plan: starter
-    region: singapore
+    plan: free
+    region: oregon
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /api/health
-    disk:
-      name: z2-digital-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_PATH
-        value: /var/data/z2digital.sqlite
       - key: OPENAI_MODEL
         value: gpt-4.1-mini
       - key: OWNER_PASSWORD

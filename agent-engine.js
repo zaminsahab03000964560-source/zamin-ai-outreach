@@ -40,7 +40,7 @@ function installAgentEngine(db, model) {
         try {
           for (const agent of AGENTS) {
             const previous = results.map(item => item.agent + ":\n" + item.output).join("\n\n");
-            const output = await ask("OWNER TASK:\n" + job.instruction + "\n\nYOUR ROLE: " + agent.name + "\nYOUR ASSIGNMENT: " + agent.task + "\n\nCOMPLETED TEAM WORK:\n" + (previous || "You are first. Establish the foundation.") + "\n\nReturn a concrete deliverable with headings, actions and assumptions.");
+            const output = await ask("OWNER TASK:\n" + job.instruction + "\n\nYOUR ROLE: " + agent.name + "\nYOUR ASSIGNMENT: " + agent.task + "\n\nTEAM HANDOFF / EARLIER AGENT WORK:\n" + (previous || "You are first. Establish the foundation.") + "\n\nCOLLABORATION RULES:\n- Read the earlier specialist output before doing your own work.\n- Reuse useful decisions, correct gaps or contradictions, and explicitly name dependencies for the next specialist.\n- Do not repeat the whole earlier output; add your own specialist deliverable.\n- Be specific: provide actual copy, fields, steps, examples or KPI definitions as relevant.\n- Clearly label assumptions and missing information; never invent real business data.\n\nReturn a concrete deliverable with headings, actions, handoff notes and assumptions.");
             results.push({ agent: agent.name, output });
             db.prepare("UPDATE agent_jobs SET results=?,updatedAt=? WHERE id=?").run(JSON.stringify(results), new Date().toISOString(), job.id);
           }
